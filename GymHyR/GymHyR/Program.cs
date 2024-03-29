@@ -3,6 +3,7 @@ using GymHyR.Components;
 using GymHyR.Components.Account;
 using GymHyR.DAL;
 using GymHyR.Data;
+using GymHyR.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -39,8 +40,11 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDbContextFactory<Context>
     (o => o.UseSqlite(builder.Configuration.GetConnectionString("ConStr")));
 
-
-
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<ClientesServices>();
+builder.Services.AddScoped<EstadoMembresiasServices>();
+builder.Services.AddScoped<MembresiasServices>();
+builder.Services.AddScoped<TipoMembresiasServices>();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
