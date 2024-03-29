@@ -75,5 +75,14 @@ namespace GymHyR.Services
         {
             return await _context.Clientes.AnyAsync(c => c.Cedula == cedula);
         }
+
+        public async Task<Clientes?> BuscarPorCedula(string cedula)
+        {
+            return await _context.Clientes
+                .Where(c => c.Cedula == cedula)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+        }
+
     }
 }

@@ -2,7 +2,7 @@
 @inject ClientesServices ClientesServices
 @using Library.Models;
 @using Services
-
+@rendermode InteractiveServer
 <PageTitle>Registro de Clientes</PageTitle>
 
 
@@ -51,7 +51,7 @@
     {
         if (await ClientesServices.ExisteCedula(cliente.Cedula))
         {
-            // Aquí puedes manejar el mensaje de error si la cédula ya existe
+
         }
         else
         {

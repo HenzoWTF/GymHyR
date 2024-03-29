@@ -4,12 +4,11 @@
 @inject TipoMembresiasServices TipoMembresiasServices
 @inject EstadoMembresiasServices EstadoMembresiasServices
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 <PageTitle>Eliminar Membresía</PageTitle>
 
-@if (membresia != null)
-{
-    <EditForm Model="membresia" OnValidSubmit="Eliminar" FormName="DeleteMembresiaForm">
+    <EditForm Model="membresia" >
         <DataAnnotationsValidator />
         <div class="card">
             <div class="card-header bg-danger text-white">
@@ -38,16 +37,13 @@
             <div class="card-footer d-flex justify-content-center mt-3">
                 <div class="btn-group">
                     <button class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
-                    <button type="submit" class="btn btn-outline-danger ms-2"><i class="bi bi-trash"></i> Eliminar</button>
+                <button type="submit" class="btn btn-outline-danger ms-2" @onclick="Eliminar"><i class="bi bi-trash"></i> Eliminar</button>
                 </div>
             </div>
         </div>
     </EditForm>
-}
-else
-{
-    <p>Cargando...</p>
-}
+
+
 
 @code {
 
