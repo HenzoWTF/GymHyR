@@ -45,7 +45,7 @@ namespace GymHyR.Migrations
                         new
                         {
                             Cedula = "402-0054036-0",
-                            Fecha = new DateTime(2024, 3, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            Fecha = new DateTime(2024, 3, 30, 0, 0, 0, 0, DateTimeKind.Local),
                             Gmail = "Vencida",
                             Nombre = "Génerico",
                             Telefono = "Diario"
@@ -138,21 +138,21 @@ namespace GymHyR.Migrations
                             TipoMembresiaId = 1,
                             Descripcion = "Mensual",
                             DiasDuracion = 30,
-                            Precio = 0m
+                            Precio = 1500m
                         },
                         new
                         {
                             TipoMembresiaId = 2,
                             Descripcion = "Semanal",
                             DiasDuracion = 5,
-                            Precio = 0m
+                            Precio = 400m
                         },
                         new
                         {
                             TipoMembresiaId = 3,
                             Descripcion = "Diario",
                             DiasDuracion = 1,
-                            Precio = 0m
+                            Precio = 150m
                         });
                 });
 

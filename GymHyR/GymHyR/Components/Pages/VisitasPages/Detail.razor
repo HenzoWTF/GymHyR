@@ -1,0 +1,45 @@
+﻿@page "/DT_Visitas/{VisitaId:int}"
+@inject VisitasServices VisitasServices
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Detalle de Visita</PageTitle>
+
+<div class="card">
+    <div class="card-header">
+        <h2>Detalles</h2>
+    </div>
+    <div class="card-body">
+        <div>
+            <strong>ID de Visita:</strong> @VisitaSeleccionada.VisitaId
+        </div>
+        <div>
+            <strong>Cédula del Cliente:</strong> @VisitaSeleccionada.Cedula
+        </div>
+        <div>
+            <strong>Fecha de Visita:</strong> @VisitaSeleccionada.Fecha.ToShortDateString()
+        </div>
+    </div>
+    <div class="card-footer d-flex justify-content-center mt-3">
+        <div class="btn-group">
+            <button class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left me-1"></i> Volver</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int VisitaId { get; set; }
+
+    public Visitas VisitaSeleccionada { get; set; } = new Visitas();
+
+    protected override async Task OnInitializedAsync()
+    {
+        VisitaSeleccionada = await VisitasServices.Buscar(VisitaId);
+    }
+
+    void Volver()
+    {
+        NavigationManager.NavigateTo("/VisitasIndex");
+    }
+}

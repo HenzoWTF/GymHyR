@@ -1,8 +1,11 @@
 ﻿using GymHyR.DAL;
 using Library.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
-
+using System.Threading.Tasks;
 
 namespace GymHyR.Services
 {
@@ -26,9 +29,8 @@ namespace GymHyR.Services
             return await _context.Membresias.AnyAsync(m => m.MembresiaId == membresiaId);
         }
 
-       public async Task<bool> Modificar(Membresias membresia)
+        public async Task<bool> Modificar(Membresias membresia)
         {
-            _context.Entry(await _context.Membresias.FindAsync(membresia.MembresiaId)).State = EntityState.Detached;
             _context.Entry(membresia).State = EntityState.Modified;
             return await _context.SaveChangesAsync() > 0;
         }
@@ -43,41 +45,19 @@ namespace GymHyR.Services
 
         public async Task<bool> Eliminar(Membresias membresia)
         {
-            _context.Entry(await _context.Membresias.FindAsync(membresia.MembresiaId)).State = EntityState.Detached;
-            _context.Entry(membresia).State = EntityState.Deleted;
+            _context.Membresias.Remove(membresia);
             return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<Membresias?> Buscar(int membresiaId)
         {
-            return await _context.Membresias
-                .Where(m => m.MembresiaId == membresiaId)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            return await _context.Membresias.FindAsync(membresiaId);
         }
 
         public async Task<List<Membresias>> GetList(Expression<Func<Membresias, bool>> criterio)
         {
-            return await _context.Membresias
-                .AsNoTracking()
-                .Where(criterio)
-                .ToListAsync();
+            return await _context.Membresias.Where(criterio).ToListAsync();
         }
-
-        public async Task<bool> Actualizar(Membresias membresia)
-        {
-            try
-            {
-                _context.Entry(await _context.Membresias.FindAsync(membresia.MembresiaId)).State = EntityState.Detached;
-                _context.Entry(membresia).State = EntityState.Modified;
-                return await _context.SaveChangesAsync() > 0;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
 
         public async Task<bool> ClienteTieneMembresia(string cedula)
         {

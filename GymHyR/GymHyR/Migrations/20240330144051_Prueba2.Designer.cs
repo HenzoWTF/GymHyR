@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymHyR.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240330001501_MenbresiasValor")]
-    partial class MenbresiasValor
+    [Migration("20240330144051_Prueba2")]
+    partial class Prueba2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,7 +48,7 @@ namespace GymHyR.Migrations
                         new
                         {
                             Cedula = "402-0054036-0",
-                            Fecha = new DateTime(2024, 3, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            Fecha = new DateTime(2024, 3, 30, 0, 0, 0, 0, DateTimeKind.Local),
                             Gmail = "Vencida",
                             Nombre = "Génerico",
                             Telefono = "Diario"
@@ -62,9 +62,6 @@ namespace GymHyR.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Descripcion")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Valor")
                         .HasColumnType("TEXT");
 
                     b.HasKey("EstadoMembresiaId");
@@ -105,6 +102,9 @@ namespace GymHyR.Migrations
                     b.Property<int>("TipoMembresiaId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<decimal>("valor")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("MembresiaId");
 
                     b.HasIndex("Cedula");
@@ -128,6 +128,9 @@ namespace GymHyR.Migrations
                     b.Property<int>("DiasDuracion")
                         .HasColumnType("INTEGER");
 
+                    b.Property<decimal>("Precio")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("TipoMembresiaId");
 
                     b.ToTable("TipoMembresias");
@@ -137,19 +140,22 @@ namespace GymHyR.Migrations
                         {
                             TipoMembresiaId = 1,
                             Descripcion = "Mensual",
-                            DiasDuracion = 30
+                            DiasDuracion = 30,
+                            Precio = 1500m
                         },
                         new
                         {
                             TipoMembresiaId = 2,
                             Descripcion = "Semanal",
-                            DiasDuracion = 5
+                            DiasDuracion = 5,
+                            Precio = 400m
                         },
                         new
                         {
                             TipoMembresiaId = 3,
                             Descripcion = "Diario",
-                            DiasDuracion = 1
+                            DiasDuracion = 1,
+                            Precio = 150m
                         });
                 });
 

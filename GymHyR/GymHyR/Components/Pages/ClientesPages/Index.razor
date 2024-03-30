@@ -22,6 +22,7 @@
             <label>Fecha de Registro Hasta</label>
             <InputDate @bind-Value="FechaFinal" class="form-control"></InputDate>
         </div>
+
     </div>
 </div>
 
@@ -52,6 +53,7 @@
             </tr>
         }
     </tbody>
+    <button type="button" @onclick="ReiniciarFiltro" class="btn btn-outline-secondary bi bi-arrow-clockwise"> Reiniciar Filtro</button>
 </table>
 
 @code {
@@ -70,5 +72,13 @@
         ClientesList = await ClientesServices.GetList(cliente =>
             (string.IsNullOrEmpty(criterio) || cliente.Cedula.Contains(criterio)) &&
             (cliente.Fecha >= FechaInicial && cliente.Fecha <= FechaFinal));
+    }
+
+    void ReiniciarFiltro()
+    {
+        criterio = string.Empty;
+        FechaInicial = DateTime.Today.AddDays(-7); // Default: 7 días atrás
+        FechaFinal = DateTime.Today;
+        Filtrar(); // Aplicar el filtro reiniciado
     }
 }

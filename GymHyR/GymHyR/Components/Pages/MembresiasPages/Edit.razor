@@ -2,12 +2,13 @@
 @inject MembresiasServices MembresiasServices
 @inject ClientesServices ClientesServices
 @inject TipoMembresiasServices TipoMembresiasServices
-@inject EstadoMembresiasServices EstadoMembresiasServices 
+@inject EstadoMembresiasServices EstadoMembresiasServices
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 <PageTitle>Editar Membresía</PageTitle>
 
-<EditForm Model="membresia" OnValidSubmit="Guardar" FormName="EditMembresiaForm">
+<EditForm Model="membresia" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
     <div class="card">
         <div class="card-header">
@@ -46,7 +47,6 @@
                 }
             </select>
             <ValidationMessage For="@(() => membresia.EstadoMembresiaId)" />
-
         </div>
         <div class="card-footer d-flex justify-content-center">
             <button type="submit" class="btn btn-outline-success"><i class="bi bi-pencil-square"></i> Guardar Cambios</button>
@@ -60,22 +60,41 @@
     public List<Clientes> clientesList { get; set; } = new List<Clientes>();
     public List<TipoMembresias> tiposMembresiaList { get; set; } = new List<TipoMembresias>();
     public List<EstadoMembresias> estadosMembresiaList { get; set; } = new List<EstadoMembresias>();
-    public Membresias membresia = new Membresias();
+    public Membresias membresia { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         membresia = await MembresiasServices.Buscar(MembresiaId);
         clientesList = await ClientesServices.GetList(c => true);
         tiposMembresiaList = await TipoMembresiasServices.GetList(c => true);
-        
-        // Obtener la lista de estados de membresía usando la instancia de EstadoMembresiasServices
-        var estadosMembresia = await EstadoMembresiasServices.GetList(c => true);
-        estadosMembresiaList.AddRange(estadosMembresia);  // Agregar los estados de membresía a la lista
+        estadosMembresiaList = await EstadoMembresiasServices.GetList(c => true);
     }
 
     public async Task Guardar()
     {
+
+        var tipoMembresiaSeleccionado = tiposMembresiaList.FirstOrDefault(t => t.TipoMembresiaId == membresia.TipoMembresiaId);
+
+
+        membresia.FechaFechaFin = membresia.FechaInicio.AddDays(tipoMembresiaSeleccionado.DiasDuracion);
+        membresia.valor += CalcularValorMembresia(tipoMembresiaSeleccionado);
+
         await MembresiasServices.Guardar(membresia);
-        NavigationManager.NavigateTo("/Index"); // Redirigir a la página principal
+        NavigationManager.NavigateTo("/Index"); 
+    }
+
+    decimal CalcularValorMembresia(TipoMembresias tipoMembresia)
+    {
+        switch (tipoMembresia.Descripcion)
+        {
+            case "Mensual":
+                return 1500;
+            case "Semanal":
+                return 400;
+            case "Diario":
+                return 150;
+            default:
+                return 0;
+        }
     }
 }

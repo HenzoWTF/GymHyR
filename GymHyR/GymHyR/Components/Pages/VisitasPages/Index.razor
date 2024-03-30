@@ -34,9 +34,6 @@
             <th>Visita ID</th>
             <th>Cédula</th>
             <th>Fecha de Visita</th>
-            <th>Editar</th>
-            <th>Eliminar</th>
-            <th>Detalles</th>
         </tr>
     </thead>
     <tbody>
@@ -46,7 +43,7 @@
                 <td>@visita.VisitaId</td>
                 <td>@visita.Cedula</td>
                 <td>@visita.Fecha.ToShortDateString()</td>
-                <td><a href="/DT_Visita/@visita.VisitaId" class="btn btn-outline-primary"><i class="bi bi-ticket-detailed"></i></a></td>
+                <td><a href="/DT_Visitas/@visita.VisitaId" class="btn btn-outline-primary"><i class="bi bi-ticket-detailed"></i></a></td>
             </tr>
         }
     </tbody>

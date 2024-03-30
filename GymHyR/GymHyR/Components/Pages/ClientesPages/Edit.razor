@@ -3,6 +3,7 @@
 @using Library.Models;
 @using Services
 @rendermode InteractiveServer
+@inject NavigationManager NavigationManager
 
 <PageTitle>Editar Cliente</PageTitle>
 
@@ -62,7 +63,11 @@
         {
             await ClientesServices.Insertar(cliente);
         }
+        Volver();
     }
-
+    void Volver()
+    {
+        NavigationManager.NavigateTo("/ClientesIndex");
+    }
 
 }

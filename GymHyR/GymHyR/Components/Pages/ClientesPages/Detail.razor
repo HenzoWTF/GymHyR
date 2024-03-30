@@ -1,4 +1,5 @@
-﻿@page "/DT_Cliente/{Cedula}"
+﻿
+@page "/DT_Clientes/{Cedula}"
 @inject ClientesServices ClientesServices
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
@@ -41,7 +42,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ClienteSeleccionado = await ClientesServices.BuscarPorCedula(Cedula);
+        ClienteSeleccionado = await ClientesServices.Buscar(Cedula);
     }
 
     void Volver()

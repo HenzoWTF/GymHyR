@@ -71,23 +71,16 @@
 
     async Task Guardar()
     {
-        // Verificar si el cliente ya tiene alguna membresía
-        var clienteTieneMembresia = await MembresiasServices.ClienteTieneMembresia(membresia.Cedula);
-
-        if (clienteTieneMembresia)
+        if (!EsClienteGenerico(membresia.Cedula) && await MembresiasServices.ClienteTieneMembresia(membresia.Cedula))
         {
-            // El cliente ya tiene una membresía, mostrar mensaje de error o tomar alguna acción
-            Console.WriteLine("El cliente ya tiene una membresía registrada.");
+            MostrarMensajeError("El cliente ya tiene una membresía asociada y no es el cliente genérico.");
         }
         else
         {
             var tipoMembresiaSeleccionado = tiposMembresiaList.FirstOrDefault(t => t.TipoMembresiaId == membresia.TipoMembresiaId);
 
-            if (tipoMembresiaSeleccionado != null)
-            {
-                membresia.valor += CalcularValorMembresia(tipoMembresiaSeleccionado);
-                membresia.FechaFechaFin = membresia.FechaInicio.AddDays(tipoMembresiaSeleccionado.DiasDuracion);
-            }
+            membresia.valor += CalcularValorMembresia(tipoMembresiaSeleccionado);
+            membresia.FechaFechaFin = membresia.FechaInicio.AddDays(tipoMembresiaSeleccionado.DiasDuracion);
 
             await MembresiasServices.Guardar(membresia);
             Nuevo();
@@ -123,5 +116,16 @@
         {
             membresia.valor = CalcularValorMembresia(tipoMembresiaSeleccionado);
         }
+    }
+
+    bool EsClienteGenerico(string cedula)
+    {
+        return cedula == "402-0054036-0";
+    }
+
+    void MostrarMensajeError(string mensaje)
+    {
+        // Implementa aquí la lógica para mostrar el mensaje de error
+        // Puede ser mediante una ventana emergente, un mensaje en la página, etc.
     }
 }

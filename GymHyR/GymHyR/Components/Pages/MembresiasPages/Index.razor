@@ -4,6 +4,32 @@
 @inject TipoMembresiasServices TipoMembresiasServices
 @inject EstadoMembresiasServices EstadoMembresiasServices
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<div class="mt-4">
+    <h2>Filtrar Membresías</h2>
+    <div class='row'>
+        <div class='col-md-3'>
+            <label>Criterio de Búsqueda por ID</label>
+            <div class="input-group mb-3">
+                <input id="criterioBusqueda" type="text" class="form-control" @bind="criterio" />
+                <button type="button" @onclick="FiltrarPorId" class="btn btn-primary">Buscar por ID</button>
+            </div>
+        </div>
+        <div class='col-md-3'>
+            <label>Fecha de Inicio</label>
+            <InputDate @bind-Value="fechaInicio" class="form-control"></InputDate>
+        </div>
+        <div class='col-md-3'>
+            <label>Fecha de Fin</label>
+            <InputDate @bind-Value="fechaFin" class="form-control"></InputDate>
+        </div>
+        <div class='col-md-3'>
+            <label></label>
+            <button type="button" @onclick="FiltrarPorFecha" class="btn btn-primary">Filtrar por Fecha</button>
+        </div>
+    </div>
+</div>
 
 <table class="table table-bordered">
     <thead>
@@ -14,11 +40,12 @@
             <th>Estado de Membresía</th>
             <th>Fecha de Inicio</th>
             <th>Fecha de Fin</th>
-            <th>Acumulado</th> 
+            <th>Acumulado</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var membresia in L_Membresias)
+        @foreach (var membresia in L_MembresiasFiltradas)
         {
             <tr>
                 <td>@membresia.MembresiaId</td>
@@ -28,13 +55,26 @@
                 <td>@membresia.FechaInicio.ToShortDateString()</td>
                 <td>@membresia.FechaFechaFin.ToShortDateString()</td>
                 <td>@membresia.valor.ToString("N2")</td>
-                <td><a href="/Ed_Membresias/@membresia.MembresiaId" class="btn btn-outline-success"><i class="bi bi-pencil-square"></i></a></td>
+                @if (membresia.EstadoMembresiaId == 2)
+                {
+                    <td><a href="/Ed_Membresias/@membresia.MembresiaId" class="btn btn-outline-success"><i class="bi bi-pencil-square"></i></a></td>
+                }
+                else
+                {
+                    <td></td>
+                }
                 <td><a href="/DeleteMembresia/@membresia.MembresiaId" class="btn btn-outline-danger"><i class="bi bi-file-earmark-x"></i></a></td>
                 <td><a href="/DT_Membresia/@membresia.MembresiaId" class="btn btn-outline-primary"><i class="bi bi-ticket-detailed"></i></a></td>
             </tr>
         }
     </tbody>
+    <button type="button" @onclick="LimpiarFiltros" class="btn btn-outline-secondary bi bi-arrow-clockwise"> Reiniciar Filtro</button>
 </table>
+
+
+<div class="mt-4">
+    <h3>Total Valor Membresías: @ObtenerTotalValorMembresias().ToString("N2")</h3>
+</div>
 
 @code {
     public List<Membresias> L_Membresias { get; set; } = new List<Membresias>();
@@ -42,25 +82,51 @@
     public List<TipoMembresias> TiposMembresiaList { get; set; } = new List<TipoMembresias>();
     public List<EstadoMembresias> EstadosMembresiaList { get; set; } = new List<EstadoMembresias>();
 
+    public List<Membresias> L_MembresiasFiltradas { get; set; } = new List<Membresias>();
+
+    public string criterio { get; set; } = string.Empty;
+    public DateTime fechaInicio { get; set; } = DateTime.Today.AddMonths(-1); // Default: hace un mes
+    public DateTime fechaFin { get; set; } = DateTime.Today;
+
     protected override async Task OnInitializedAsync()
+    {
+        await CargarListas();
+        FiltrarTodo();
+    }
+
+    async Task CargarListas()
     {
         L_Membresias = await MembresiasServices.GetList(m => m.FechaInicio > DateTime.Now.AddDays(-30));
         ClientesList = await ClientesServices.GetList(c => true);
         TiposMembresiaList = await TipoMembresiasServices.GetList(t => true);
         EstadosMembresiaList = await EstadoMembresiasServices.GetList(e => true);
-        await ActualizarEstadosMembresias();
+
+        L_MembresiasFiltradas.AddRange(L_Membresias);
     }
 
-    async Task ActualizarEstadosMembresias()
+    void FiltrarTodo()
     {
-        foreach (var membresia in L_Membresias)
-        {
-            if (membresia.FechaFechaFin < DateTime.Today)
-            {
-                membresia.EstadoMembresiaId = ObtenerEstadoVencidoId();
-                await MembresiasServices.Actualizar(membresia);
-            }
-        }
+        L_MembresiasFiltradas.Clear();
+        L_MembresiasFiltradas.AddRange(L_Membresias);
+    }
+
+    void FiltrarPorId()
+    {
+        L_MembresiasFiltradas = L_Membresias.Where(m => m.MembresiaId.ToString().Contains(criterio)).ToList();
+    }
+
+    void FiltrarPorFecha()
+    {
+        L_MembresiasFiltradas = L_Membresias.Where(m =>
+            m.FechaInicio >= fechaInicio && m.FechaInicio <= fechaFin).ToList();
+    }
+
+    void LimpiarFiltros()
+    {
+        criterio = string.Empty;
+        fechaInicio = DateTime.Today.AddMonths(-1);
+        fechaFin = DateTime.Today;
+        FiltrarTodo();
     }
 
     string ObtenerNombreCliente(string cedula)
@@ -81,9 +147,13 @@
         return estadoMembresia?.Descripcion ?? "Estado de membresía no encontrado";
     }
 
-    int ObtenerEstadoVencidoId()
+    decimal ObtenerTotalValorMembresias()
     {
-        return 2;
+        decimal total = 0;
+        foreach (var membresia in L_MembresiasFiltradas)
+        {
+            total += membresia.valor;
+        }
+        return total;
     }
 }
-

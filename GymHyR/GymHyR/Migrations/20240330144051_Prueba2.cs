@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GymHyR.Migrations
 {
     /// <inheritdoc />
-    public partial class Pruebas : Migration
+    public partial class Prueba2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,7 +48,8 @@ namespace GymHyR.Migrations
                     TipoMembresiaId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Descripcion = table.Column<string>(type: "TEXT", nullable: true),
-                    DiasDuracion = table.Column<int>(type: "INTEGER", nullable: false)
+                    DiasDuracion = table.Column<int>(type: "INTEGER", nullable: false),
+                    Precio = table.Column<decimal>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,6 +65,7 @@ namespace GymHyR.Migrations
                     Cedula = table.Column<string>(type: "TEXT", nullable: true),
                     TipoMembresiaId = table.Column<int>(type: "INTEGER", nullable: false),
                     EstadoMembresiaId = table.Column<int>(type: "INTEGER", nullable: false),
+                    valor = table.Column<decimal>(type: "TEXT", nullable: false),
                     FechaInicio = table.Column<DateTime>(type: "TEXT", nullable: false),
                     FechaFechaFin = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
@@ -117,7 +119,7 @@ namespace GymHyR.Migrations
             migrationBuilder.InsertData(
                 table: "Clientes",
                 columns: new[] { "Cedula", "Fecha", "Gmail", "Nombre", "Telefono" },
-                values: new object[] { "402-0054036-0", new DateTime(2024, 3, 29, 0, 0, 0, 0, DateTimeKind.Local), "Vencida", "Génerico", "Diario" });
+                values: new object[] { "402-0054036-0", new DateTime(2024, 3, 30, 0, 0, 0, 0, DateTimeKind.Local), "Vencida", "Génerico", "Diario" });
 
             migrationBuilder.InsertData(
                 table: "EstadoMembresias",
@@ -130,12 +132,12 @@ namespace GymHyR.Migrations
 
             migrationBuilder.InsertData(
                 table: "TipoMembresias",
-                columns: new[] { "TipoMembresiaId", "Descripcion", "DiasDuracion" },
+                columns: new[] { "TipoMembresiaId", "Descripcion", "DiasDuracion", "Precio" },
                 values: new object[,]
                 {
-                    { 1, "Mensual", 30 },
-                    { 2, "Semanal", 5 },
-                    { 3, "Diario", 1 }
+                    { 1, "Mensual", 30, 1500m },
+                    { 2, "Semanal", 5, 400m },
+                    { 3, "Diario", 1, 150m }
                 });
 
             migrationBuilder.CreateIndex(

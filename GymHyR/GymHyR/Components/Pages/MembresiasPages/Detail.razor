@@ -1,9 +1,10 @@
 ﻿@page "/DT_Membresia/{MembresiaId:int}"
 @inject MembresiasServices MembresiasServices
+@inject NavigationManager NavigationManager
 @inject ClientesServices ClientesServices
 @inject TipoMembresiasServices TipoMembresiasServices
 @inject EstadoMembresiasServices EstadoMembresiasServices
-@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 <PageTitle>Detalle de Membresía</PageTitle>
 
@@ -12,24 +13,34 @@
         <h2>Detalles</h2>
     </div>
     <div class="card-body">
-        <div>
-            <strong>Membresía ID:</strong> @MembresiaSeleccionada.MembresiaId
-        </div>
-        <div>
-            <strong>Cliente:</strong> @ObtenerNombreCliente(MembresiaSeleccionada.Cedula)
-        </div>
-        <div>
-            <strong>Tipo de Membresía:</strong> @ObtenerDescripcionTipoMembresia(MembresiaSeleccionada.TipoMembresiaId)
-        </div>
-        <div>
-            <strong>Estado de Membresía:</strong> @ObtenerDescripcionEstadoMembresia(MembresiaSeleccionada.EstadoMembresiaId)
-        </div>
-        <div>
-            <strong>Fecha de Inicio:</strong> @MembresiaSeleccionada.FechaInicio.ToShortDateString()
-        </div>
-        <div>
-            <strong>Fecha de Fin:</strong> @MembresiaSeleccionada.FechaFechaFin.ToShortDateString()
-        </div>
+        @if (MembresiaSeleccionada != null)
+        {
+            <div>
+                <strong>ID de Membresía:</strong> @MembresiaSeleccionada.MembresiaId
+            </div>
+            <div>
+                <strong>Nombre del Cliente:</strong> @NombreCliente
+            </div>
+            <div>
+                <strong>Tipo de Membresía:</strong> @TipoMembresia
+            </div>
+            <div>
+                <strong>Estado de Membresía:</strong> @EstadoMembresia
+            </div>
+            <div>
+                <strong>Valor:</strong> @MembresiaSeleccionada.valor
+            </div>
+            <div>
+                <strong>Fecha de Inicio:</strong> @MembresiaSeleccionada.FechaInicio.ToShortDateString()
+            </div>
+            <div>
+                <strong>Fecha de Fin:</strong> @MembresiaSeleccionada.FechaFechaFin.ToShortDateString()
+            </div>
+        }
+        else
+        {
+            <p>La membresía seleccionada no se encontró o no está disponible.</p>
+        }
     </div>
     <div class="card-footer d-flex justify-content-center mt-3">
         <div class="btn-group">
@@ -42,40 +53,40 @@
     [Parameter]
     public int MembresiaId { get; set; }
 
-    public Membresias MembresiaSeleccionada { get; set; } = new Membresias();
+    public Membresias MembresiaSeleccionada { get; set; }
 
-    public List<Clientes> ClientesList { get; set; } = new List<Clientes>();
-    public List<TipoMembresias> TiposMembresiaList { get; set; } = new List<TipoMembresias>();
-    public List<EstadoMembresias> EstadosMembresiaList { get; set; } = new List<EstadoMembresias>();
+    public string NombreCliente { get; set; }
+    public string TipoMembresia { get; set; }
+    public string EstadoMembresia { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         MembresiaSeleccionada = await MembresiasServices.Buscar(MembresiaId);
-        ClientesList = await ClientesServices.GetList(c => true);
-        TiposMembresiaList = await TipoMembresiasServices.GetList(t => true);
-        EstadosMembresiaList = await EstadoMembresiasServices.GetList(e => true);
-    }
-
-    string ObtenerNombreCliente(string cedula)
-    {
-        var cliente = ClientesList.FirstOrDefault(c => c.Cedula == cedula);
-        return cliente?.Nombre ?? "Cliente no encontrado";
-    }
-
-    string ObtenerDescripcionTipoMembresia(int tipoMembresiaId)
-    {
-        var tipoMembresia = TiposMembresiaList.FirstOrDefault(t => t.TipoMembresiaId == tipoMembresiaId);
-        return tipoMembresia?.Descripcion ?? "Tipo de membresía no encontrado";
-    }
-
-    string ObtenerDescripcionEstadoMembresia(int estadoMembresiaId)
-    {
-        var estadoMembresia = EstadosMembresiaList.FirstOrDefault(e => e.EstadoMembresiaId == estadoMembresiaId);
-        return estadoMembresia?.Descripcion ?? "Estado de membresía no encontrado";
+        NombreCliente = await ObtenerNombreCliente(MembresiaSeleccionada.Cedula);
+        TipoMembresia = await ObtenerDescripcionTipoMembresia(MembresiaSeleccionada.TipoMembresiaId);
+        EstadoMembresia = await ObtenerDescripcionEstadoMembresia(MembresiaSeleccionada.EstadoMembresiaId);
     }
 
     void Volver()
     {
-        NavigationManager.NavigateTo("/MembresiasIndex");
+        NavigationManager.NavigateTo("/Index");
+    }
+
+    async Task<string> ObtenerNombreCliente(string cedula)
+    {
+        var cliente = await ClientesServices.Buscar(cedula);
+        return cliente != null ? cliente.Nombre : "Cliente no encontrado";
+    }
+
+    async Task<string> ObtenerDescripcionTipoMembresia(int tipoMembresiaId)
+    {
+        var tipoMembresia = await TipoMembresiasServices.Buscar(tipoMembresiaId);
+        return tipoMembresia != null ? tipoMembresia.Descripcion : "Tipo de membresía no encontrado";
+    }
+
+    async Task<string> ObtenerDescripcionEstadoMembresia(int estadoMembresiaId)
+    {
+        var estadoMembresia = await EstadoMembresiasServices.Buscar(estadoMembresiaId);
+        return estadoMembresia != null ? estadoMembresia.Descripcion : "Estado de membresía no encontrado";
     }
 }

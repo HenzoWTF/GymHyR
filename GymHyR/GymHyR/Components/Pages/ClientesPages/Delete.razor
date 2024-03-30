@@ -2,10 +2,12 @@
 @inject ClientesServices ClientesServices
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
+@using Library.Models
+
 
 <PageTitle>Eliminar Cliente</PageTitle>
 
-<EditForm Model="cliente">
+<EditForm Model="cliente" >
     <DataAnnotationsValidator />
     <div class="card">
         <div class="card-header bg-danger text-white">
@@ -58,11 +60,13 @@
         var resultado = await ClientesServices.Eliminar(cliente);
         if (resultado)
         {
-            NavigationManager.NavigateTo("/ClientesIndex");
+            Volver();
         }
         else
         {
             // Manejar el error o mostrar un mensaje al usuario
         }
     }
+
+
 }
