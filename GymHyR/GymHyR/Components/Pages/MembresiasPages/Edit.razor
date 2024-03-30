@@ -1,0 +1,81 @@
+﻿@page "/Ed_Membresias/{MembresiaId:int}"
+@inject MembresiasServices MembresiasServices
+@inject ClientesServices ClientesServices
+@inject TipoMembresiasServices TipoMembresiasServices
+@inject EstadoMembresiasServices EstadoMembresiasServices 
+@inject NavigationManager NavigationManager
+
+<PageTitle>Editar Membresía</PageTitle>
+
+<EditForm Model="membresia" OnValidSubmit="Guardar" FormName="EditMembresiaForm">
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-header">
+            <h1>Editar Membresía</h1>
+        </div>
+        <div class="card-body">
+            <!-- Para el cliente -->
+            <label class="form-label">Cliente</label>
+            <select @bind="membresia.Cedula" class="form-control" disabled>
+                <option value="">Seleccione un cliente</option>
+                @foreach (var cliente in clientesList)
+                {
+                    <option value="@cliente.Cedula">@cliente.Nombre</option>
+                }
+            </select>
+            <ValidationMessage For="@(() => membresia.Cedula)" />
+
+            <!-- Para el tipo de membresía -->
+            <label class="form-label">Tipo de Membresía</label>
+            <select @bind="membresia.TipoMembresiaId" class="form-control" disabled>
+                <option value="">Seleccione un tipo de membresía</option>
+                @foreach (var tipoMembresia in tiposMembresiaList)
+                {
+                    <option value="@tipoMembresia.TipoMembresiaId">@tipoMembresia.Descripcion</option>
+                }
+            </select>
+            <ValidationMessage For="@(() => membresia.TipoMembresiaId)" />
+
+            <!-- Para el estado de membresía -->
+            <label class="form-label">Estado de Membresía</label>
+            <select @bind="membresia.EstadoMembresiaId" class="form-control">
+                <option value="">Seleccione un estado de membresía</option>
+                @foreach (var estadoMembresia in estadosMembresiaList)
+                {
+                    <option value="@estadoMembresia.EstadoMembresiaId">@estadoMembresia.Descripcion</option>
+                }
+            </select>
+            <ValidationMessage For="@(() => membresia.EstadoMembresiaId)" />
+
+        </div>
+        <div class="card-footer d-flex justify-content-center">
+            <button type="submit" class="btn btn-outline-success"><i class="bi bi-pencil-square"></i> Guardar Cambios</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int MembresiaId { get; set; }
+    public List<Clientes> clientesList { get; set; } = new List<Clientes>();
+    public List<TipoMembresias> tiposMembresiaList { get; set; } = new List<TipoMembresias>();
+    public List<EstadoMembresias> estadosMembresiaList { get; set; } = new List<EstadoMembresias>();
+    public Membresias membresia = new Membresias();
+
+    protected override async Task OnInitializedAsync()
+    {
+        membresia = await MembresiasServices.Buscar(MembresiaId);
+        clientesList = await ClientesServices.GetList(c => true);
+        tiposMembresiaList = await TipoMembresiasServices.GetList(c => true);
+        
+        // Obtener la lista de estados de membresía usando la instancia de EstadoMembresiasServices
+        var estadosMembresia = await EstadoMembresiasServices.GetList(c => true);
+        estadosMembresiaList.AddRange(estadosMembresia);  // Agregar los estados de membresía a la lista
+    }
+
+    public async Task Guardar()
+    {
+        await MembresiasServices.Guardar(membresia);
+        NavigationManager.NavigateTo("/Index"); // Redirigir a la página principal
+    }
+}

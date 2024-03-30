@@ -12,7 +12,10 @@ namespace Library.Models
         [Key]
         public int VisitaId { get; set; }
 
-        public int MembresiaId { get; set; }
+        public string? Cedula { get; set; }
+
+        [Required(ErrorMessage = "Este campo es requerido")]
+        public DateTime Fecha { get; set; } = DateTime.Today;
 
     }
 }

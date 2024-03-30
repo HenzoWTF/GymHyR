@@ -14,19 +14,23 @@
             <th>Estado de Membresía</th>
             <th>Fecha de Inicio</th>
             <th>Fecha de Fin</th>
+            <th>Acumulado</th> 
         </tr>
     </thead>
-    <tbody> 
+    <tbody>
         @foreach (var membresia in L_Membresias)
         {
             <tr>
                 <td>@membresia.MembresiaId</td>
-                <td>@ObtenerNombreCliente(membresia.ClienteId)</td>
+                <td>@ObtenerNombreCliente(membresia.Cedula)</td>
                 <td>@ObtenerDescripcionTipoMembresia(membresia.TipoMembresiaId)</td>
                 <td>@ObtenerDescripcionEstadoMembresia(membresia.EstadoMembresiaId)</td>
                 <td>@membresia.FechaInicio.ToShortDateString()</td>
                 <td>@membresia.FechaFechaFin.ToShortDateString()</td>
+                <td>@membresia.valor.ToString("N2")</td>
+                <td><a href="/Ed_Membresias/@membresia.MembresiaId" class="btn btn-outline-success"><i class="bi bi-pencil-square"></i></a></td>
                 <td><a href="/DeleteMembresia/@membresia.MembresiaId" class="btn btn-outline-danger"><i class="bi bi-file-earmark-x"></i></a></td>
+                <td><a href="/DT_Membresia/@membresia.MembresiaId" class="btn btn-outline-primary"><i class="bi bi-ticket-detailed"></i></a></td>
             </tr>
         }
     </tbody>
@@ -53,16 +57,15 @@
         {
             if (membresia.FechaFechaFin < DateTime.Today)
             {
- 
                 membresia.EstadoMembresiaId = ObtenerEstadoVencidoId();
                 await MembresiasServices.Actualizar(membresia);
             }
         }
     }
 
-    string ObtenerNombreCliente(int clienteId)
+    string ObtenerNombreCliente(string cedula)
     {
-        var cliente = ClientesList.FirstOrDefault(c => c.ClienteId == clienteId);
+        var cliente = ClientesList.FirstOrDefault(c => c.Cedula == cedula);
         return cliente?.Nombre ?? "Cliente no encontrado";
     }
 
@@ -80,7 +83,7 @@
 
     int ObtenerEstadoVencidoId()
     {
- 
         return 2;
     }
 }
+

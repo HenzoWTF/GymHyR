@@ -2,10 +2,12 @@
 using Library.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GymHyR.Services
 {
-
     public class ClientesServices
     {
         private readonly Context _context;
@@ -21,28 +23,28 @@ namespace GymHyR.Services
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> Existe(int clienteId)
+        public async Task<bool> Existe(string cedula)
         {
-            return await _context.Clientes.AnyAsync(c => c.ClienteId == clienteId);
+            return await _context.Clientes.AnyAsync(c => c.Cedula == cedula);
         }
 
         public async Task<bool> Modificar(Clientes cliente)
         {
-            _context.Entry(await _context.Clientes.FindAsync(cliente.ClienteId)).State = EntityState.Detached;
+            _context.Entry(await _context.Clientes.FindAsync(cliente.Cedula)).State = EntityState.Detached;
             _context.Entry(cliente).State = EntityState.Modified;
             return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> Guardar(Clientes cliente)
         {
-            bool cedulaExistente = await ExisteCedula(cliente.Cedula);
+            bool cedulaExistente = await Existe(cliente.Cedula);
 
             if (cedulaExistente)
             {
                 return false;
             }
 
-            if (await Existe(cliente.ClienteId))
+            if (await Existe(cliente.Cedula))
                 return await Modificar(cliente);
             else
                 return await Insertar(cliente);
@@ -50,15 +52,15 @@ namespace GymHyR.Services
 
         public async Task<bool> Eliminar(Clientes cliente)
         {
-            _context.Entry(await _context.Clientes.FindAsync(cliente.ClienteId)).State = EntityState.Detached;
+            _context.Entry(await _context.Clientes.FindAsync(cliente.Cedula)).State = EntityState.Detached;
             _context.Entry(cliente).State = EntityState.Deleted;
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<Clientes?> Buscar(int clienteId)
+        public async Task<Clientes?> Buscar(string cedula)
         {
             return await _context.Clientes
-                .Where(c => c.ClienteId == clienteId)
+                .Where(c => c.Cedula == cedula)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
         }
@@ -69,11 +71,6 @@ namespace GymHyR.Services
                 .AsNoTracking()
                 .Where(criterio)
                 .ToListAsync();
-        }
-
-        public async Task<bool> ExisteCedula(string cedula)
-        {
-            return await _context.Clientes.AnyAsync(c => c.Cedula == cedula);
         }
 
         public async Task<Clientes?> BuscarPorCedula(string cedula)

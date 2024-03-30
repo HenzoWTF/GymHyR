@@ -3,6 +3,7 @@ using System;
 using GymHyR.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymHyR.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20240329203833_Pruebas")]
+    partial class Pruebas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
@@ -99,9 +102,6 @@ namespace GymHyR.Migrations
                     b.Property<int>("TipoMembresiaId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("valor")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("MembresiaId");
 
                     b.HasIndex("Cedula");
@@ -125,9 +125,6 @@ namespace GymHyR.Migrations
                     b.Property<int>("DiasDuracion")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Precio")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("TipoMembresiaId");
 
                     b.ToTable("TipoMembresias");
@@ -137,22 +134,19 @@ namespace GymHyR.Migrations
                         {
                             TipoMembresiaId = 1,
                             Descripcion = "Mensual",
-                            DiasDuracion = 30,
-                            Precio = 0m
+                            DiasDuracion = 30
                         },
                         new
                         {
                             TipoMembresiaId = 2,
                             Descripcion = "Semanal",
-                            DiasDuracion = 5,
-                            Precio = 0m
+                            DiasDuracion = 5
                         },
                         new
                         {
                             TipoMembresiaId = 3,
                             Descripcion = "Diario",
-                            DiasDuracion = 1,
-                            Precio = 0m
+                            DiasDuracion = 1
                         });
                 });
 

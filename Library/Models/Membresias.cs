@@ -13,11 +13,13 @@ namespace Library.Models
         [Key]
         public int MembresiaId { get; set; }
 
-        public int ClienteId { get; set; }
+        public string? Cedula { get; set; }
 
         public int TipoMembresiaId { get; set;}
 
         public int EstadoMembresiaId { get; set; }
+
+        public decimal valor { get; set; }
 
         [Required(ErrorMessage = "Este campo es requerido")]
         public DateTime FechaInicio { get; set; } = DateTime.Today;

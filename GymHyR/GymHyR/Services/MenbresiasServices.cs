@@ -26,7 +26,7 @@ namespace GymHyR.Services
             return await _context.Membresias.AnyAsync(m => m.MembresiaId == membresiaId);
         }
 
-        public async Task<bool> Modificar(Membresias membresia)
+       public async Task<bool> Modificar(Membresias membresia)
         {
             _context.Entry(await _context.Membresias.FindAsync(membresia.MembresiaId)).State = EntityState.Detached;
             _context.Entry(membresia).State = EntityState.Modified;
@@ -78,5 +78,10 @@ namespace GymHyR.Services
             }
         }
 
+
+        public async Task<bool> ClienteTieneMembresia(string cedula)
+        {
+            return await _context.Membresias.AnyAsync(m => m.Cedula == cedula);
+        }
     }
 }

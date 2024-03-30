@@ -17,7 +17,7 @@ namespace Library.Models
 
         public int DiasDuracion { get; set; }
 
-        //public Decimal Precio { get; set; }
+        public decimal Precio { get; set; }
 
         [ForeignKey("TipoMembresiaId")]
         public ICollection<Membresias> Membresias { get; set; } = new List<Membresias>();

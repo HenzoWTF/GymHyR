@@ -16,6 +16,7 @@ namespace Library.Models
 
         public string? Descripcion { get; set; }
 
+
         [ForeignKey("EstadoMembresiaId")]
         public ICollection<Membresias> Membresias { get; set; } = new List<Membresias>();
     }
