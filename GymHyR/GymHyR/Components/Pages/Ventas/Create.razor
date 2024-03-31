@@ -6,6 +6,7 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
 @inject NotificationService notificationServices
+@inject NavigationManager navigationManager
 
 
 <h3>Create</h3>
@@ -104,8 +105,8 @@
 
             <div class="card-footer d-flex justify-content-center">
                 <div class="btn-group">
+                    <a href="/VIndex" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
                     <button type="submit" class="btn btn-outline-success"><i class="bi bi-floppy-fill"></i> Guardar</button>
-                    <a href="/VentaIndex" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
                 </div>
             </div>
         </div>
@@ -136,9 +137,6 @@
             if (producto != null)
             {
                 producto.Cantidad -= detalle.Cantidad;
-                detalle.PrecioVenta = producto.PrecioCompra * Cantidad;
-                ventas.Valor = detalle.PrecioVenta;
-
                 await productosServices.PutProducto(producto.ProductoId, producto);
             }
         }
@@ -156,7 +154,7 @@
                 };
             notificationServices.Notify(Mensaje1);
             await Task.Delay(1000);
-         //   navigationManager.NavigateTo("/VentaIndex");
+            navigationManager.NavigateTo("/VIndex");
         }
         else
         {
@@ -179,7 +177,6 @@
     }
 
 
-
     public async Task AgregarDetalle()
     {
         if (!ValidarDetalleCompleto())
@@ -192,31 +189,45 @@
         {
             if (Cantidad <= productoSeleccionado.Cantidad)
             {
+                // Restante del producto después de agregar el detalle
+                int cantidadRestante = productoSeleccionado.Cantidad - Cantidad;
 
-                float precioVentaDetalle = Cantidad * productoSeleccionado.PrecioVenta;
-                var nuevoDetalle = new VentaDetalle
-                    {
-                        ProductoId = Producto,
-                        Cantidad = Cantidad,
-                        PrecioVenta = precioVentaDetalle
-                    };
+                // Verificar si la cantidad restante es menor o igual a cero
+                if (cantidadRestante >= 0)
+                {
+                    float precioVentaDetalle = Cantidad * productoSeleccionado.PrecioVenta;
+                    var nuevoDetalle = new VentaDetalle
+                        {
+                            ProductoId = Producto,
+                            Cantidad = Cantidad,
+                            PrecioVenta = precioVentaDetalle
+                        };
 
-                ventas.VentaDetalle.Add(nuevoDetalle);
-                ventas.Valor += precioVentaDetalle;
+                    ventas.VentaDetalle.Add(nuevoDetalle);
+                    ventas.Valor += precioVentaDetalle;
 
-                var mensaje = new NotificationMessage
-                    {
-                        Severity = NotificationSeverity.Success,
-                        Summary = "Detalle agregado",
-                        Detail = "Se ha agregado un nuevo detalle a la venta",
-                        Duration = 3000
-                    };
-                notificationServices.Notify(mensaje);
+                    var mensaje = new NotificationMessage
+                        {
+                            Severity = NotificationSeverity.Success,
+                            Summary = "Detalle agregado",
+                            Detail = "Se ha agregado un nuevo detalle a la venta",
+                            Duration = 3000
+                        };
+                    notificationServices.Notify(mensaje);
 
-                Producto = 0;
-                Cantidad = 0;
-                PrecioVenta = 0;
-                StateHasChanged();
+                    StateHasChanged();
+                }
+                else
+                {
+                    var mensajeError = new NotificationMessage
+                        {
+                            Severity = NotificationSeverity.Error,
+                            Summary = "Error al agregar detalle",
+                            Detail = "La cantidad ingresada es mayor que la cantidad disponible del producto",
+                            Duration = 3000
+                        };
+                    notificationServices.Notify(mensajeError);
+                }
             }
             else
             {
@@ -231,6 +242,7 @@
             }
         }
     }
+
 
 
     public bool ValidarDetalleCompleto()
