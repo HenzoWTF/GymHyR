@@ -14,11 +14,11 @@ namespace Library
 		[Key]
 		public int VentaId { get; set; }
 
-		[Required(ErrorMessage = "Este campo es requerido")]
+        [Required(ErrorMessage = "Este campo es requerido")]
 		public DateTime Fecha { get; set; } = DateTime.Today;
 
 		[Range(1, int.MaxValue, ErrorMessage = "El campo debe ser mayor que cero")]
-		public decimal Valor { get; set; }
+		public float Valor { get; set; }
 
 		[ForeignKey("VentaId")]
 		public List<VentaDetalle> VentaDetalle { get; set; } = new List<VentaDetalle>();
