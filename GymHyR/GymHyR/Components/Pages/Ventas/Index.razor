@@ -16,12 +16,12 @@
             <h3>Historial de vetas</h3>
             <div>
                 <a href="/" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> </a>
-                <a href="/CreateCompras" class="btn btn-outline-primary">Crear Compra</a>
+                <a href="/CreateVentas" class="btn btn-outline-primary">Crear ventas</a>
             </div>
 
             <div class="row justify-content-end">
                 <div class="col-4">
-                    <label>Cantidad de compras:</label>
+                    <label>Cantidad de ventas:</label>
                     <span class="badge bg-secondary">@ventas.Count()</span>
                 </div>
             </div>
@@ -73,7 +73,7 @@
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>Fecha de compra</th>
+                            <th>Fecha de venta</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -92,9 +92,9 @@
                                     <td>@venta.Fecha.ToShortDateString()</td>
                                     <td>
                                         <div>
-                                            <a href="/EditProducto/@venta.VentaId" class="btn btn-outline-primary"><i class="bi bi-pencil-fill" /> Editar</a>
-                                            <a href="/ViewCompra/@venta.VentaId" class="btn btn-outline-primary"><i class="bi bi-eyes" /> View</a>
-                                            <a href="/DeleteCompra/@venta.VentaId" class="btn btn-outline-danger"><i class="bi bi-trash-fill" /> Eliminar</a>
+                                            <a href="/EditVenta/@venta.VentaId" class="btn btn-outline-primary"><i class="bi bi-pencil-fill" /> Editar</a>
+                                            <a href="/ViewVenta/@venta.VentaId" class="btn btn-outline-primary"><i class="bi bi-eyes" /> View</a>
+                                            <a href="/DeleteVentas/@venta.VentaId" class="btn btn-outline-danger"><i class="bi bi-trash-fill" /> Eliminar</a>
                                         </div>
                                     </td>
                                 </tr>
