@@ -46,6 +46,7 @@ builder.Services.AddScoped<EstadoMembresiasServices>();
 builder.Services.AddScoped<MembresiasServices>();
 builder.Services.AddScoped<TipoMembresiasServices>();
 builder.Services.AddScoped<VisitasServices>();
+builder.Services.AddScoped<VentasServices>();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
