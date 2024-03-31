@@ -24,7 +24,7 @@ namespace GymHyR.Services
 				.Where(c => c.VentaId == id).FirstOrDefaultAsync();
 		}
 
-		public async Task<Ventas> PostCompras(Ventas Venta)
+		public async Task<Ventas> PostVentas(Ventas Venta)
 		{
 			context.Venta.Add(Venta);
 			await context.SaveChangesAsync();
