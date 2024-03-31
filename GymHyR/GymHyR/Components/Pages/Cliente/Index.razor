@@ -37,6 +37,7 @@
             <th>Teléfono</th>
             <th>Editar</th>
             <th>Eliminar</th>
+            <th>Detalle</th>
         </tr>
     </thead>
     <tbody>
@@ -55,6 +56,8 @@
         }
     </tbody>
     <button type="button" @onclick="ReiniciarFiltro" class="btn btn-outline-secondary bi bi-arrow-clockwise"> Reiniciar Filtro</button>
+    <button type="button" @onclick="IrCreate" class="btn btn-outline-primary"> Crear cliente</button>
+
 </table>
 
 @code {
@@ -65,7 +68,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await Filtrar(); // Mostrar todos los clientes al cargar la página
+        await Filtrar(); 
     }
 
     async Task Filtrar()
@@ -78,8 +81,13 @@
     void ReiniciarFiltro()
     {
         criterio = string.Empty;
-        FechaInicial = DateTime.Today.AddDays(-7); // Default: 7 días atrás
+        FechaInicial = DateTime.Today.AddDays(-7); 
         FechaFinal = DateTime.Today;
-        Filtrar(); // Aplicar el filtro reiniciado
+        Filtrar(); 
+    }
+
+    void IrCreate()
+    {
+        NavigationManager.NavigateTo("/CreateClientes");
     }
 }
