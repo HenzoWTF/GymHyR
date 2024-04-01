@@ -20,6 +20,10 @@ namespace GymHyR.DAL
         public DbSet<EstadoMembresias> EstadoMembresias { get; set; }
         public DbSet<Visitas> Visitas { get; set; }
         public DbSet<Ventas> Venta { get; set; }
+
+        public DbSet<VentaDetalle> VentaDetalle { get; set; }
+
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -29,6 +33,8 @@ namespace GymHyR.DAL
 
             modelBuilder.Entity<EstadoMembresias>().HasData(new EstadoMembresias() { EstadoMembresiaId = 1, Descripcion = "Activa" });
             modelBuilder.Entity<EstadoMembresias>().HasData(new EstadoMembresias() { EstadoMembresiaId = 2, Descripcion = "Vencida" });
+            modelBuilder.Entity<Clientes>().HasData(new Clientes() { Cedula = "402-0054036-0", Nombre = "Génerico", Gmail = "Generico@gmail.com", Fecha = DateTime.Today, Telefono = "8093078809", });
+
         }
     }
 }
