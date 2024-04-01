@@ -22,11 +22,12 @@ namespace Library
 		[Required(ErrorMessage = "Este campo es requerido")]
 		public DateTime Fecha { get; set; } = DateTime.Today;
 
-		//[EmailAddress(ErrorMessage = "El correo electrónico no es válido")]
+		[EmailAddress(ErrorMessage = "El correo electrónico no es válido")]
 		public string? Gmail { get; set; }
 
-		[Required(ErrorMessage = "Este campo es requerido")]
-		public string? Telefono { get; set; }
+        [Required(ErrorMessage = "Este campo es requerido")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Ingrese un número de teléfono válido")]
+        public string? Telefono { get; set; }
 
 		[ForeignKey("Cedula")]
 		public ICollection<Membresias> Membresias { get; set; } = new List<Membresias>();
