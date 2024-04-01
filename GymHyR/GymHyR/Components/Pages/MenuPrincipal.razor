@@ -83,7 +83,7 @@
                     </div>
                     @*Vacio*@
                     <div class="col-md-3 text-center">
-                        <button type="button" class="d-block mx-auto borde" @onclick="IrMembresia">
+                        <button type="button" class="d-block mx-auto borde" @onclick="IrVisitas">
                             <h6><strong>Membresia</strong></h6>
                             <img src="Imagenes/advertencia.png" class="icon" style="width: 150px; height: 150px; margin-right: 10px;" />
                         </button>
@@ -125,6 +125,12 @@
     {
         navigation.NavigateTo("/IndexMembresia");
     }
+
+    private void IrVisitas()
+    {
+        navigation.NavigateTo("/VisitasIndex");
+    }
+
     private void IrACategorias()
     {
         navigation.NavigateTo("/Categorias");
