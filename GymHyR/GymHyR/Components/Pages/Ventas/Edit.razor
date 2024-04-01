@@ -9,8 +9,6 @@
 @using Microsoft.AspNetCore.Components.Web
 
 
-
-
 <PageTitle>Editar Ventas</PageTitle>
 <RadzenNotification />
 
@@ -91,7 +89,7 @@
                                         <tr>
                                             <td>@ObtenerProducto(detalle.ProductoId)</td>
                                             <td>@detalle.Cantidad</td>
-                                            <td>@CalcularTotalVentas()</td>
+                                            <td>@detalle.PrecioVenta</td>
                                             <td><button type="button" class="btn btn-outline-danger" @onclick="()=> EliminarDetalle(detalle)"><i class="bi bi-trash3-fill" /></button></td>
                                         </tr>
                                     }
@@ -160,7 +158,7 @@
                 };
             notificationServices.Notify(Mensaje1);
             await Task.Delay(1000);
-               navigationManager.NavigateTo("/VIndex");
+            navigationManager.NavigateTo("/VIndex");
         }
         else
         {
@@ -173,6 +171,8 @@
                 };
             notificationServices.Notify(Mensaje);
         }
+
+ 
     }
 
 
@@ -226,7 +226,7 @@
                             };
 
                         ventas.VentaDetalle.Add(nuevoDetalle);
-                        ventas.Valor += precioVentaDetalle;
+                        ventas.Valor += precioVentaDetalle * Cantidad;
 
                         var mensaje = new NotificationMessage
                             {
@@ -290,19 +290,20 @@
 
     public async Task EliminarDetalle(VentaDetalle detalle)
     {
-
         float precioDetalleEliminado = detalle.PrecioVenta;
+
+        int cantidadDetalleEliminado = detalle.Cantidad;
 
         ventas.VentaDetalle.Remove(detalle);
 
         var producto = Productos.FirstOrDefault(p => p.ProductoId == detalle.ProductoId);
         if (producto != null)
         {
-            producto.Cantidad += detalle.Cantidad;
+            producto.Cantidad += cantidadDetalleEliminado;
             await productosServices.PutProducto(producto.ProductoId, producto);
         }
 
-        ventas.Valor -= precioDetalleEliminado;
+        ventas.Valor -= precioDetalleEliminado * cantidadDetalleEliminado;
 
         var mensaje = new NotificationMessage
             {
@@ -313,10 +314,6 @@
             };
         notificationServices.Notify(mensaje);
     }
-
-
-    
-   
 
     public float CalcularTotalVentas()
     {
