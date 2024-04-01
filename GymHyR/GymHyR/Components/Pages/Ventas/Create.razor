@@ -9,7 +9,7 @@
 @inject NavigationManager navigationManager
 
 
-<h3>Create</h3>
+
 
 <PageTitle>Ventas</PageTitle>
 <RadzenNotification />
@@ -20,6 +20,7 @@
     <div class="container">
         <div class="card shadow-lg">
             <div class="card-header">
+                <a href="/VIndex" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> </a>
                 <h3>Crear Venta</h3>
             </div>
 
@@ -105,7 +106,6 @@
 
             <div class="card-footer d-flex justify-content-center">
                 <div class="btn-group">
-                    <a href="/VIndex" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Volver</a>
                     <button type="submit" class="btn btn-outline-success"><i class="bi bi-floppy-fill"></i> Guardar</button>
                 </div>
             </div>
@@ -130,7 +130,6 @@
 
     public async Task Guardar()
     {
-        // Agregar detalles de compra a la compra
         foreach (var detalle in ventas.VentaDetalle)
         {
             var producto = Productos.FirstOrDefault(p => p.ProductoId == detalle.ProductoId);
@@ -141,7 +140,6 @@
             }
         }
 
-        // Guardar la venta
         var response = await VentasServices.PostVentas(ventas);
         if (response != null)
         {
@@ -189,10 +187,8 @@
         {
             if (Cantidad <= productoSeleccionado.Cantidad)
             {
-                // Restante del producto después de agregar el detalle
                 int cantidadRestante = productoSeleccionado.Cantidad - Cantidad;
 
-                // Verificar si la cantidad restante es menor o igual a cero
                 if (cantidadRestante >= 0)
                 {
                     float precioVentaDetalle = Cantidad * productoSeleccionado.PrecioVenta;
@@ -204,7 +200,7 @@
                         };
 
                     ventas.VentaDetalle.Add(nuevoDetalle);
-                    ventas.Valor += precioVentaDetalle;
+                    ventas.Valor += precioVentaDetalle * Cantidad;
 
                     var mensaje = new NotificationMessage
                         {
@@ -247,10 +243,9 @@
 
     public bool ValidarDetalleCompleto()
     {
-        // Verificar si el producto y la cantidad están seleccionados
+
         if (Producto == 0 || Cantidad == 0)
         {
-            // Mostrar mensaje de error
             var mensajeError = new NotificationMessage
                 {
                     Severity = NotificationSeverity.Error,
@@ -275,7 +270,7 @@
         ventas.VentaDetalle.Remove(detalle);
 
         // Restar el precio del detalle eliminado al valor total de la venta
-        ventas.Valor -= precioDetalleEliminado;
+        ventas.Valor -= precioDetalleEliminado * Cantidad;
 
         // Mostrar notificación de éxito
         var mensaje = new NotificationMessage
@@ -287,6 +282,7 @@
             };
         notificationServices.Notify(mensaje);
     }
+
 
 
 

@@ -104,6 +104,7 @@
                 if (producto != null)
                 {
                     producto.Cantidad += detalle.Cantidad;
+
                     await productosServices.PutProducto(producto.ProductoId, producto);
                 }
             }
